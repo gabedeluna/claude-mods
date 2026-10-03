@@ -1,0 +1,9 @@
+{
+  "name": "sidechat",
+  "version": "0.1.0",
+  "description": "A side panel for questions about the current session: it reads the conversation from cache, looks things up read-only, recaps, says what the main thread is doing, draws diagrams as artifacts and sends a note to main.",
+  "types": "./types/index.d.ts",
+  "author": {
+    "name": "gabedeluna"
+  }
+}

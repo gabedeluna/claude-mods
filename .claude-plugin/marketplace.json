@@ -1,0 +1,19 @@
+{
+  "name": "claude-mods",
+  "owner": {
+    "name": "gabedeluna"
+  },
+  "description": "Claude Code mods: a session ledger and a side chat.",
+  "plugins": [
+    {
+      "name": "ledger",
+      "source": "./plugins/ledger",
+      "description": "A running record of each Claude Code session: topics, decisions in your own words, open questions with a recommended answer, to-dos for you and for Claude. Shown in a panel; /ledger opens it."
+    },
+    {
+      "name": "sidechat",
+      "source": "./plugins/sidechat",
+      "description": "Ask about your session in a side panel without touching the main conversation: recap, what is it doing now, explain copied text, follow-ups, diagrams, and a note back to main. /sidechat opens it."
+    }
+  ]
+}
