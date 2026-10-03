@@ -862,7 +862,25 @@ const todoRows = (t: LedgerTopic, card: LedgerCard | undefined, finished: Readon
     })
     out.push(...mine.map((i) => itemRow(t, i, card)))
   }
-  out.push(...todos.filter((i) => !i.agent).map((i) => itemRow(t, i, card)))
+  const mine = todos.filter((i) => !i.agent)
+  // Steps with no agent are the lead's; under agent groups they get their own header so they
+  // never read as the last agent's.
+  if (mine.length && agents.length) {
+    const done = mine.filter((i) => i.done).length
+    out.push({
+      key: `${t.id}:agent:lead`,
+      header: true,
+      headerColor: done === mine.length ? OK : TEAL,
+      glyph: '',
+      glyphColor: GREY,
+      text: `lead · ${done} of ${mine.length}${done === mine.length ? ' · done' : ''}`,
+      muted: false,
+      tag: '',
+      details: [],
+      matches: ['all', 'claude'],
+    })
+  }
+  out.push(...mine.map((i) => itemRow(t, i, card)))
   return out
 }
 
