@@ -222,6 +222,13 @@ async function userTexts($: Env) {
   return [...typed, ...picked, ...said]
 }
 
+// Your own to-do, checked off or back on from the panel; Claude's close only through the tool, with evidence.
+async function checkTodo($: Env, item: string, done: boolean) {
+  const doc = await read($, docA)
+  const r = applyOps(doc, [{ op: done ? 'close' : 'reopen', item }], { userTexts: [], turn: await $.session.turns() })
+  if (r.changed) await commit($, r.doc)
+}
+
 async function commit($: Env, doc: LedgerDoc) {
   await update($, docA, () => doc)
   await save($, doc)
@@ -558,7 +565,11 @@ export const register: Register = (on) => {
                       return (
                         <Box key={`r-${r.key}`} flexDirection="column">
                           <Box flexDirection="row">
-                            <Text color={r.glyphColor}>{`${r.glyph} `}</Text>
+                            {r.check ? (
+                              <Button key={`chk-${r.key}`} plain label={`${r.glyph} `} onPress={() => void checkTodo($, r.check!.item, !r.check!.done)} />
+                            ) : (
+                              <Text color={r.glyphColor}>{`${r.glyph} `}</Text>
+                            )}
                             <Button key={`i-${r.key}`} plain dimColor={r.muted} label={isOpen ? split(r.text, titleW)[0] : clip(r.text, titleW)} onPress={toggle(`i:${r.key}`, isOpen)} />
                             <Box flexGrow={1} />
                             {r.tag === 'YOU' ? (
@@ -651,6 +662,8 @@ type Row = {
   tagColor?: string
   details: Detail[]
   fill?: { topic: string; question: string; rec?: string }
+  /** Your own to-do: its box is a button that checks it off, or back on. */
+  check?: { item: string; done: boolean }
   matches: LedgerFilter[]
 }
 type TopicView = {
@@ -772,6 +785,7 @@ const itemRow = (t: LedgerTopic, i: LedgerItem, card: LedgerCard | undefined): R
         ...(i.detail ? [{ t: i.detail }] : [{ t: i.done ? 'Done' : 'Open' }]),
       ],
       matches: i.done ? ['all'] : ['all', i.owner === 'you' ? 'you' : 'claude'],
+      ...(i.owner === 'you' ? { check: { item: i.id, done: !!i.done } } : {}),
     }
   }
   return { key: i.id, glyph: '·', glyphColor: GREY, text: i.text, muted: true, tag: '', details: [], matches: ['all'] }

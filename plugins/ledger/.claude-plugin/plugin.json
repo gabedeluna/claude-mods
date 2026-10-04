@@ -1,6 +1,6 @@
 {
   "name": "ledger",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A per-session ledger of topics, decisions, open questions, to-dos and board state, kept by Claude through a tool and shown in a pane.",
   "types": "./types/index.d.ts",
   "author": {
